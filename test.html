@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+
+<body>
+    <audio id="musique">
+        <source src="son/JDSherbert - Nostalgia Music Pack - Disney Films.mp3" type="audio/mp3">
+        Votre navigateur ne supporte pas la balise audio.
+    </audio>
+
+    <div class="btns">
+        <button id="music">
+            <img src="img/sound.svg" alt="">
+        </button>
+        <button id="regles">i</button>
+    </div>
+
+    <section class="cover">
+        <div class="cover-div">
+            <div class="title">
+                <span><img src="img/etoile.jpeg" alt=""></span>
+                <h1>Magic Spell</h1>
+                <span><img src="img/etoile.jpeg" alt=""></span>
+            </div>
+            <button id="start">Jouer</button>
+
+            <img src="img/coeur.jpeg" alt="" class="top-left">
+            <img src="img/coeur.jpeg" alt="" class="top-right">
+            <img src="img/etoile1.jpeg" alt="" class="bottom-left">
+            <img src="img/etoile1.jpeg" alt="" class="bottom-right">
+        </div>
+    </section>
+
+    <section class="game">
+        <div class="panel">
+            <p>TEMPS :<span id="timer"></span> </p>
+            <p>SCORE : <span id="points"></span></p>
+        </div>
+
+        <div class="game-box">
+            <p id="mot"></p>
+            <input type="text" name="t" id="txt" autocomplete="off">
+            <button id="playGame">Commencer une partie</button>
+        </div>
+    </section>
+
+    <section class="modal">
+        <div class="regles">
+            <button id="close"><img src="img/cross.svg" alt="fermer le règlement"></button>
+            <h2>Règles du jeu :</h2>
+            <ol>
+                <h3>
+                    <li>But du jeu</li>
+                </h3>
+                <p>Tape correctement les mots affichés à l’écran avant la fin du temps imparti.</p>
+                <h3>
+                    <li>Déroulement</li>
+                </h3>
+                <ul>
+                    <li>Chaque round propose une série de mots à recopier.</li>
+                    <li>Attention : les touches de ton clavier sont mélangées. La lettre que tu tapes ne correspond pas
+                        toujours à celle qui apparaît.</li>
+                    <li>Plus tu avances, plus la difficulté augmente (temps plus court, mots plus longs, pièges plus
+                        nombreux).</li>
+                </ul>
+                <h3>
+                    <li>Points</li>
+                </h3>
+                <ul>
+                    <li>Une bonne réponse rapporte 1 point.</li>
+                    <li>Une mauvaise réponse retire 1 point.</li>
+                </ul>
+                <h3>
+                    <li>Effets spéciaux</li>
+                </h3>
+                <ul>
+                    <li>Certaines lettres déclenchent des malus : mélange du clavier, réduction du temps, score remis à
+                        zéro…</li>
+                    <li>D’autres déclenchent des bonus : ajout de temps, points doublés, protection par un bouclier.
+                    </li>
+                </ul>
+                <h3>
+                    <li>Fin de partie</li>
+                </h3>
+                <ul>
+                    <li>Le jeu se termine quand tu as terminé tous les rounds ou quand le temps est écoulé.</li>
+                    <li>Ton score final est affiché à la fin.</li>
+                </ul>
+            </ol>
+        </div>
+    </section>
+
+    <div class="overlay">
+        <div id="roundNum"></div>
+    </div>
+
+    <section class="end fadeIn">
+        <div id="scoreScreen">
+            <h2>Fin de la partie</h2>
+            <p>Ton score final : <span id="finalScore"></span></p>
+            <p>Meilleur score : <span id="bestScore"></span></p>
+            <button id="restartBtn">Rejouer</button>
+
+            <img src="img/coeur.jpeg" alt="" class="top-left">
+            <img src="img/coeur.jpeg" alt="" class="top-right">
+            <img src="img/etoile1.jpeg" alt="" class="bottom-left">
+            <img src="img/etoile1.jpeg" alt="" class="bottom-right">
+        </div>
+    </section>
+
+    <script>
+        let music = document.querySelector('#musique');
+        let btnMusic = document.getElementById('music');
+        let startBtn = document.getElementById('start');
+        let modal = document.querySelector(".modal");
+        let restartBtn = document.getElementById('restartBtn');
+
+        let roundNum = document.getElementById('roundNum');
+        let endScreen = document.querySelector('.end');
+
+        document.getElementById("regles").onclick = function () {
+            modal.style.display = "flex";
+        };;
+
+        document.getElementById("close").onclick = function () {
+            modal.style.display = "none";
+        }
+
+        btnMusic.addEventListener('click', function () {
+
+            if (music.paused) {
+                music.play();
+                btnMusic.innerHTML = '<img src="img/sound.svg" alt="">';
+            } else {
+                music.pause();
+                btnMusic.innerHTML = '<img src="img/sound-off.svg" alt="">';
+            }
+        });
+
+        const clickSound = new Audio('son/click.mp3');
+        const goodAnswer = new Audio('son/good.mp3');
+        const wrongAnswer = new Audio('son/wrong.mp3')
+
+        clickSound.volume = 0.2;
+        goodAnswer.volume = 0.2;
+        wrongAnswer.volume = 0.3;
+        music.volume = 0.7;
+
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                clickSound.currentTime = 0;
+                clickSound.play();
+            });
+        });
+
+        startBtn.addEventListener('click', function () {
+            document.querySelector('.cover').classList.add('slide-up');
+            document.getElementById("regles").style.display = "block";
+            modal.style.display = "flex";
+        })
+
+        restartBtn.addEventListener('click', function () {
+
+            document.querySelector('.end').classList.add('slide-up');
+
+            point = 0;
+            roundIndex = 0;
+            phraseIndex = 0;
+            round(roundIndex);
+        })
+
+    </script>
+    <script src="test.js"></script>
+
+
+</body>
+
+</html>
