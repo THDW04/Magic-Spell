@@ -42,6 +42,10 @@ h1 {
   position: relative;
   z-index: 1;
   padding: 20px;
+  background-image: url('img/bg.jpeg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .slide-up {
@@ -160,7 +164,7 @@ audio {
   top: 15px;
 }
 
-#regles {
+#regles{
   border-radius: 15px;
   padding: 7px 25px;
   font-size: 2rem;
@@ -170,7 +174,7 @@ audio {
 }
 
 #music,
-#close {
+.close, #creditBtn {
   padding: 10px;
   border-radius: 15px;
   display: flex;
@@ -178,13 +182,18 @@ audio {
   align-items: center;
 }
 
-#music img,
-#close img {
+#creditBtn{
+  display: none;
+  padding-bottom: 5px;
+  margin-top: 10px;
+}
+
+button img{
   width: 40px;
   height: 40px;
 }
 
-#close {
+.close {
   border: solid 2px #fccad9;
   box-shadow: 7px 5px 0px #fccad9;
   position: absolute;
@@ -197,7 +206,7 @@ audio {
   box-shadow: 7px 5px 0px #fccad9;
 }
 
-#close:active,
+.close:active,
 #valider:active {
   box-shadow: 2px 2px 0px #fccad9;
 }
@@ -210,13 +219,13 @@ h3 {
   margin-top: 20px;
 }
 
-ol ul {
+ol ul, #credits ul {
   margin-top: 10px;
   padding-left: 20px;
   list-style-type: disc;
 }
 
-.regles,
+.regles, #credits,
 #roundNum {
   background-color: #b5cdff;
   border: solid 5px antiquewhite;
@@ -247,7 +256,7 @@ ol ul {
 }
 
 .modal,
-.overlay {
+.overlay, .modalCredit {
   display: none;
   position: fixed;
   z-index: 1;
@@ -261,8 +270,8 @@ ol ul {
 
 .game-box {
   background: #ebffb5;
-  max-width: 1400px;
-  height: 800px;
+  max-width: 1200px;
+  height: 700px;
   border-radius: 15px;
   margin: auto;
   display: flex;
@@ -284,7 +293,7 @@ ol ul {
   outline: none;
   transition: all 0.3s ease;
   width: 100%;
-  max-width: 800px;
+  max-width: 750px;
   cursor: url('img/writing-copie.png'), text;
 }
 
@@ -339,4 +348,25 @@ ol ul {
   background-image: radial-gradient(#fff 12%, transparent 13%),
     radial-gradient(#fff0f5 12%, transparent 13%);
   gap: 30px;
+}
+
+
+/* --- ANIMATIONS POUR LES MALUS --- */
+
+/* Effet de Secousse pour les erreurs critiques */
+
+.impact-shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    border: 3px solid red; 
+}
+
+/* --- ANIMATIONS POUR LES BONUS --- */
+
+/* Brillance pour les bonus */
+.points-bonus {
+    color: gold;
+    transform: scale(1.3);
+    font-weight: bold;
+    transition: all 0.5s ease;
 }

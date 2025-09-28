@@ -34,13 +34,13 @@ const keyB = new Map([
 
 //Tableaux pour chaque round
 let phrasesRound = [
-   // ["quiz", "gypsy", "fjord"], //round 1
-   // ["maison rouge", "petit chat noir"], //round 2
+    ["quiz", "gypsy", "fjord"], //round 1
+    ["maison rouge", "petit chat noir"], //round 2
     ["round 3", "mdr"]
 ];
 
 //Liste des malus/bonus
-let effects = ["chronoZero", "bonusTemps", "melangeClavier", "freezeChrono", "resetScore", "moitieTemps", "doublePoints", "bouclier"];
+let effects = ["chronoZero", "bonusTemps", "melangeClavier", "freezeChrono", "resetScore", "moitieTemps", "doublePoints"];
 
 const points = document.getElementById('points');
 let input = document.getElementById('txt');
@@ -54,6 +54,8 @@ let effectMap = new Map();
 let randomKeyB = new Map(keyB);
 let lettresNormales;
 
+let gameBox = document.querySelector('.game-box');
+let timerElement = document.getElementById('timer');
 mot.innerHTML = phrasesRound[roundIndex][phraseIndex];
 
 //Timer du jeu
@@ -69,12 +71,14 @@ function startTimer() {
 
     // lance un nouveau setInterval
     timerId = setInterval(() => {
-        document.getElementById('timer').textContent = n;
+        timerElement.textContent = n;
 
         if (n === 0) {
             clearInterval(timerId);
-            timerId = null; // réinitialisation
+            timerId = null;
             input.disabled = true;
+            endGame();
+            endScreen.style.display = "flex";
         }
         n--;
     }, 1000);
@@ -115,42 +119,42 @@ function randomKeyb(arr) {
     return keyMap;
 }
 
+
 //Fonction qui actionne les effets
-let bouclier = false;
+
 
 function applyEffect(nom) {
+
+    function triggerImpact(element, className, duration = 400) {
+        element.classList.add(className);
+        setTimeout(() => {
+            element.classList.remove(className);
+            element.style.color = ''; // Réinitialiser la couleur
+        }, duration);
+    }
+
     switch (nom) {
         //Les Malus
         case "chronoZero":
-
-            if (bouclier) {
-                bouclier = false;
-                return;
-            }
+            triggerImpact(gameBox, 'impact-shake', 600);
+            timerElement.style.color = 'red';
             n = 0;
             break;
 
         case "melangeClavier":
-            if (bouclier) {
-                bouclier = false;
-                return;
-            }
+            triggerImpact(gameBox, 'impact-shake', 400);
             randomKeyB = randomKeyb(lettresNormales);
             break;
 
         case "resetScore":
-            if (bouclier) {
-                bouclier = false;
-                return;
-            }
+            triggerImpact(points, 'impact-shake', 400);
+            points.style.color = 'red';
             point = 0;
             break;
 
         case "moitieTemps":
-            if (bouclier) {
-                bouclier = false;
-                return;
-            }
+            triggerImpact(timerElement, 'impact-shake', 400);
+            timerElement.style.color = 'orange';
             n = Math.floor(n / 2);
             break;
 
@@ -158,21 +162,27 @@ function applyEffect(nom) {
         case "freezeChrono":
             clearInterval(timerId);
             setTimeout(() => {
+
                 startTimer();
             }, 10000);
             break;
 
         case "bonusTemps":
+            triggerImpact(timerElement, 'points-bonus', 500);
+            timerElement.style.color = 'lightgreen';
+
             n += 30;
             break;
 
         case "doublePoints":
+            triggerImpact(points, 'points-bonus', 500);
+            points.style.color = 'gold';
+
             point *= 2;
             break;
-        case "bouclier":
-            bouclier = true;
-            break;
     }
+
+    point = Math.max(0, point);
 
     return "effet ok"
 }
@@ -223,21 +233,21 @@ function round() {
 //Annuler couper / copier / coller dans l'input 
 input.oncut = input.oncopy = input.onpaste = function (event) {
     event.preventDefault();
-};*/
-
+};
+*/
 function endGame() {
-  // afficher le score final
-  document.getElementById("finalScore").textContent = point;
+    // afficher le score final
+    document.getElementById("finalScore").textContent = point;
 
-  // récupérer le meilleur score sauvegardé
-  let best = localStorage.getItem("bestScore");
-  if (best === null || point > best) {
-    best = point;
-    localStorage.setItem("bestScore", best);
-  }
+    // récupérer le meilleur score sauvegardé
+    let best = localStorage.getItem("bestScore");
+    if (best === null || point > best) {
+        best = point;
+        localStorage.setItem("bestScore", best);
+    }
 
-  // afficher le meilleur score
-  document.getElementById("bestScore").textContent = best;
+    // afficher le meilleur score
+    document.getElementById("bestScore").textContent = best;
 }
 
 //Savoir quand une touche est appuyer dans l'input
@@ -272,12 +282,13 @@ input.addEventListener('keypress', (e) => {
             goodAnswer.play();
         } else {
             point--;
+            point = Math.max(0, point);
             wrongAnswer.currentTime = 0;
             wrongAnswer.play();
-            document.querySelector('.game-box').classList.add('shake');
+            gameBox.classList.add('shake');
 
             setTimeout(() => {
-                document.querySelector('.game-box').classList.remove("shake");
+                gameBox.classList.remove("shake");
             }, 400);
         }
 
@@ -289,14 +300,14 @@ input.addEventListener('keypress', (e) => {
         if (roundIndex >= phrasesRound.length) {
             clearInterval(timerId);
             input.disabled = true;
-        } else if (phraseIndex === 0 && roundIndex > 0) { 
+        } else if (phraseIndex === 0 && roundIndex > 0) {
             // Si un nouveau round doit commencer
             round();
             roundNum.innerHTML = `ROUND ${roundIndex}`;
             document.querySelector('.overlay').style.display = 'flex';
 
             setTimeout(() => {
-            document.querySelector('.overlay').style.display = 'none';
+                document.querySelector('.overlay').style.display = 'none';
             }, 2800);
         }
 
@@ -307,8 +318,10 @@ input.addEventListener('keypress', (e) => {
             endScreen.style.display = "flex";
         }
 
-    input.value = "";
-    points.innerHTML = point;
+        input.value = "";
+        points.innerHTML = point;
+        point = Math.max(0, point);
+
     }
 })
 

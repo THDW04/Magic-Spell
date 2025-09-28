@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test</title>
-    <link rel="stylesheet" href="test.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <audio id="musique">
+    <audio autoplay loop id="musique">
         <source src="son/JDSherbert - Nostalgia Music Pack - Disney Films.mp3" type="audio/mp3">
         Votre navigateur ne supporte pas la balise audio.
     </audio>
@@ -19,6 +19,9 @@
             <img src="img/sound.svg" alt="">
         </button>
         <button id="regles">i</button>
+        <button id="creditBtn">
+            <img src="img/copyrigh.svg" alt="crédits">
+        </button>
     </div>
 
     <section class="cover">
@@ -52,7 +55,7 @@
 
     <section class="modal">
         <div class="regles">
-            <button id="close"><img src="img/cross.svg" alt="fermer le règlement"></button>
+            <button class="close"><img src="img/cross.svg" alt="fermer le règlement"></button>
             <h2>Règles du jeu :</h2>
             <ol>
                 <h3>
@@ -100,7 +103,26 @@
         <div id="roundNum"></div>
     </div>
 
-    <section class="end fadeIn">
+    <div class="modalCredit">
+        <div id="credits">
+            <button class="close"><img src="img/cross.svg" alt="fermer les crédits"></button>
+
+            <h2>Crédits du site</h2>
+            <h3>Les Musiques et sons</h3>
+            <ul>
+                <li><a href="https://www.zapsplat.com/music/game-sound-basic-digital-retro-incorrect-wrong-error-negative-tone-2/"
+                        target="_blank">Son de buzzer de mauvaise réponse disponible sur Zapsplat</a></li>
+                <li><a href="https://freesound.org/people/Kagateni/sounds/571501/" target="_blank">Son de click
+                        disponible de Kagateni sur Freesound</a></li>
+                <li><a href="https://www.zapsplat.com/music/magic-wand-ping-chime-fairy-godmother-18/"
+                        target="_blank">Magic wand ping, chime, fairy godmother 18</a></li>
+                <li><a href="https://jdsherbert.itch.io/nostalgia-music-pack" target="_blank">JDSherbert - Nostalgia
+                        Music Pack - Disney Films</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="end">
         <div id="scoreScreen">
             <h2>Fin de la partie</h2>
             <p>Ton score final : <span id="finalScore"></span></p>
@@ -119,6 +141,7 @@
         let btnMusic = document.getElementById('music');
         let startBtn = document.getElementById('start');
         let modal = document.querySelector(".modal");
+        let modalCredit = document.querySelector(".modalCredit");
         let restartBtn = document.getElementById('restartBtn');
 
         let roundNum = document.getElementById('roundNum');
@@ -126,11 +149,19 @@
 
         document.getElementById("regles").onclick = function () {
             modal.style.display = "flex";
-        };;
+        };
 
-        document.getElementById("close").onclick = function () {
-            modal.style.display = "none";
-        }
+        document.getElementById("creditBtn").onclick = function () {
+            modalCredit.style.display = "flex";
+        };
+
+        document.querySelectorAll(".close").forEach((close) => {
+            close.addEventListener('click', () => {
+                modal.style.display = "none";
+                modalCredit.style.display = "none";
+            })
+        })
+
 
         btnMusic.addEventListener('click', function () {
 
@@ -162,6 +193,8 @@
         startBtn.addEventListener('click', function () {
             document.querySelector('.cover').classList.add('slide-up');
             document.getElementById("regles").style.display = "block";
+            document.getElementById("creditBtn").style.display = "block";
+
             modal.style.display = "flex";
         })
 
@@ -176,7 +209,7 @@
         })
 
     </script>
-    <script src="test.js"></script>
+    <script src="script.js"></script>
 
 
 </body>
